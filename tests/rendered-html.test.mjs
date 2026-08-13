@@ -74,6 +74,8 @@ test("contains the official 48 entrants, avatars, and no starter preview", async
   assert.match(page, /仓上日向",212,30\.95,"repechage"/);
   assert.match(page, /const avatarIds = \[1,2,3,4,5,6,8,7/);
   assert.match(page, /github\.com\/haoxiongliu\/tinghao-main-draw/);
+  assert.match(page, /图片已包含复现种子/);
+  assert.match(page, /className="capture-seed"/);
   assert.doesNotMatch(page, /balanced/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await assert.rejects(access(new URL("../app/_sites-preview", import.meta.url)));
