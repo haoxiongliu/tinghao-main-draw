@@ -446,6 +446,16 @@ a {
 .import-button:hover {
   background: #f0f2ff;
 }
+.actual-draw-download {
+  color: var(--detail);
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.actual-draw-download:hover {
+  color: #4254bd;
+}
 .import-button input {
   position: absolute;
   width: 1px;
