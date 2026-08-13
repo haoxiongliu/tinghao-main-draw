@@ -2,6 +2,7 @@
 
 import { toBlob } from "html-to-image";
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import actualDrawData from "@/public/data/tinghao-main-draw-2026-actual.json";
 
 type Source = "seed" | "direct" | "repechage";
 type Participant = {
@@ -219,6 +220,13 @@ function importedPlanFromRows(rows: ImportRow[]) {
   return plan;
 }
 
+const actualPlan = importedPlanFromRows(actualDrawData.draw);
+const actualDrawSeed = actualDrawData.randomSeed;
+
+function planForSeed(seedText: string) {
+  return seedText === actualDrawSeed ? [...actualPlan] : makePlan(seedText);
+}
+
 function importedPlanFromCsv(text: string) {
   const matrix = parseCsv(text.replace(/^\uFEFF/, ""));
   if (matrix.length < 2) throw new Error("CSV 没有可读取的数据行");
@@ -294,14 +302,14 @@ function FinalStage({ players, winnerId, onWinner }: { players: [Participant | n
 }
 
 export default function Home() {
-  const [seedText, setSeedText] = useState(createRandomSeed);
-  const [plan, setPlan] = useState<Participant[] | null>(null);
-  const [revealed, setRevealed] = useState(0);
+  const [seedText, setSeedText] = useState(actualDrawSeed);
+  const [plan, setPlan] = useState<Participant[] | null>(() => [...actualPlan]);
+  const [revealed, setRevealed] = useState(48);
   const [winners, setWinners] = useState<Winners>({});
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | Source>("all");
   const [copied, setCopied] = useState(false);
-  const [importNotice, setImportNotice] = useState<{ kind: "success" | "error"; text: string } | null>(null);
+  const [importNotice, setImportNotice] = useState<{ kind: "success" | "error"; text: string } | null>({ kind: "success", text: "当前展示运营公布的第十届实际签表" });
   const [sharePreview, setSharePreview] = useState<{ url: string; file: File; mode: ShareMode } | null>(null);
   const [shareBusy, setShareBusy] = useState<ShareMode | null>(null);
   const [seedCopied, setSeedCopied] = useState(false);
@@ -320,7 +328,7 @@ export default function Home() {
   const startDraw = (instant = false, fresh = false) => {
     const nextSeed = fresh ? createRandomSeed() : seedText.trim() || createRandomSeed();
     if (fresh || !seedText.trim()) setSeedText(nextSeed);
-    setPlan(makePlan(nextSeed));
+    setPlan(planForSeed(nextSeed));
     setRevealed(instant ? 48 : 0);
     setWinners({});
     setImportNotice(null);
@@ -554,6 +562,7 @@ export default function Home() {
               <span>加载 JSON / CSV</span>
               <input type="file" accept=".json,.csv,application/json,text/csv" onChange={loadDraw}/>
             </label>
+            <a className="actual-draw-download" href="/data/tinghao-main-draw-2026-actual.json" download>下载第十届实际签表 JSON</a>
             <small>JSON 可恢复签表、随机种子与赛果；CSV 恢复 48 个签位</small>
           </div>
           {importNotice && <p className={`import-notice ${importNotice.kind}`} role={importNotice.kind === "error" ? "alert" : "status"} aria-live="polite">{importNotice.kind === "success" ? "✓" : "!"} {importNotice.text}</p>}
