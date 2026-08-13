@@ -20,7 +20,7 @@ test("server-renders the draw tool and corrected roster", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>第十届挺好萌 · 正赛抽签器<\/title>/);
+  assert.match(html, /<title>第十届挺好萌 · 淘汰赛抽签器<\/title>/);
   assert.match(html, /四十八强/);
   assert.match(html, /纯田真奈/);
   assert.match(html, />503</);
@@ -60,6 +60,8 @@ test("contains the official 48 entrants, avatars, and no starter preview", async
   assert.deepEqual(actualDraw.draw.slice(0, 3).map((row) => row.name), ["仲町阿拉蕾", "郡上奏", "优木雪菜"]);
   assert.deepEqual(actualDraw.draw.slice(-3).map((row) => row.name), ["社美胡", "砺波伊吹", "凉风凉"]);
   assert.match(page, /下载第十届实际签表 JSON/);
+  assert.match(page, /第十届挺好萌 · 淘汰赛晋级推演图/);
+  assert.doesNotMatch(page, /正赛/);
   assert.doesNotMatch(page, /useState\("tinghao-2026"\)/);
   assert.match(page, /加载 JSON \/ CSV/);
   assert.match(page, /accept="\.json,\.csv,application\/json,text\/csv"/);
