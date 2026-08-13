@@ -576,7 +576,8 @@ export default function Home() {
         <div className="bracket-capture" ref={bracketCaptureRef}>
         <div className="capture-titlebar">
           <img src="/tinghao/logo26.avif" alt=""/>
-          <div><b>第十届挺好萌 · 正赛晋级图</b><span>{seedText}</span></div>
+          <div><b>第十届挺好萌 · 正赛晋级图</b><span>相同种子可复现同一签表</span></div>
+          <div className="capture-seed"><small>复现种子</small><code>{seedText}</code></div>
           <strong>{Object.keys(winners).length ? `推演预测 · 已选择 ${Object.keys(winners).length} 场` : "48 强正式签表"}</strong>
         </div>
         <div className="section-heading wide">
@@ -626,7 +627,7 @@ export default function Home() {
 
       {sharePreview && <div className="share-overlay" role="dialog" aria-modal="true" aria-label="分享图片预览">
         <div className="share-dialog">
-          <div className="share-dialog-head"><div><span>SHARE IMAGE</span><h3>{sharePreview.mode === "prediction" ? "推演预测分享图" : "签表分享图"}</h3></div><button onClick={() => setSharePreview(null)} aria-label="关闭预览">×</button></div>
+          <div className="share-dialog-head"><div><span>SHARE IMAGE</span><h3>{sharePreview.mode === "prediction" ? "推演预测分享图" : "签表分享图"}</h3><small>图片已包含复现种子：{seedText}</small></div><button onClick={() => setSharePreview(null)} aria-label="关闭预览">×</button></div>
           <img src={sharePreview.url} alt={sharePreview.mode === "prediction" ? "推演预测分享图预览" : "签表分享图预览"}/>
           <div className="share-dialog-actions"><button className="primary" onClick={downloadShareImage}>下载 PNG <b>↓</b></button>{typeof navigator !== "undefined" && navigator.share && navigator.canShare?.({ files: [sharePreview.file] }) && <button className="secondary" onClick={systemShareImage}>系统分享</button>}</div>
         </div>
