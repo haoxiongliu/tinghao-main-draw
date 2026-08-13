@@ -391,7 +391,7 @@ export default function Home() {
 
   const copyResult = async () => {
     if (!drawText) return;
-    await navigator.clipboard.writeText(`第十届挺好萌正赛抽签结果\n签位生成种子：${seedText}\n\n${drawText}`);
+    await navigator.clipboard.writeText(`第十届挺好萌淘汰赛抽签结果\n签位生成种子：${seedText}\n\n${drawText}`);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
@@ -458,7 +458,7 @@ export default function Home() {
 
   const systemShareImage = async () => {
     if (!sharePreview || !navigator.share || !navigator.canShare?.({ files: [sharePreview.file] })) return;
-    await navigator.share({ files: [sharePreview.file], title: sharePreview.mode === "prediction" ? "挺好萌正赛推演预测" : "挺好萌正赛签表", text: `签位生成种子：${seedText}` });
+    await navigator.share({ files: [sharePreview.file], title: sharePreview.mode === "prediction" ? "挺好萌淘汰赛推演预测" : "挺好萌淘汰赛签表", text: `签位生成种子：${seedText}` });
   };
 
   const copyShareSeed = async () => {
@@ -509,13 +509,13 @@ export default function Home() {
         <div className="hero-kicker"><span>THM · MAIN DRAW</span><i /></div>
         <div className="hero-grid">
           <div>
-            <p className="eyebrow">第十届挺好萌 · 正赛工具</p>
-            <h1>四十八强<br/><em>正赛抽签器</em></h1>
+            <p className="eyebrow">第十届挺好萌 · 淘汰赛工具</p>
+            <h1>四十八强<br/><em>淘汰赛抽签器</em></h1>
             <p className="hero-copy">八位种子落位，四大分区展开。支持完整随机、逐位揭晓与可复现签表。</p>
           </div>
           <img className="hero-logo" src="/tinghao/logo26.avif" alt="挺好萌 2026 官方视觉"/>
           <div className="hero-stats" aria-label="赛事数据">
-            <div><strong>48</strong><span>正赛选手</span></div>
+            <div><strong>48</strong><span>淘汰赛选手</span></div>
             <div><strong>16</strong><span>首轮小组</span></div>
             <div><strong>8</strong><span>种子选手</span></div>
             <div><strong>4</strong><span>四分之一区</span></div>
@@ -592,12 +592,12 @@ export default function Home() {
         <div className="bracket-capture" ref={bracketCaptureRef}>
         <div className="capture-titlebar">
           <img src="/tinghao/logo26.avif" alt=""/>
-          <div><b>第十届挺好萌 · 正赛晋级图</b><span>相同种子可复现同一签表</span></div>
+          <div><b>第十届挺好萌 · 淘汰赛晋级推演图</b><span>相同种子可复现同一签表</span></div>
           <div className="capture-seed"><small>签位生成种子</small><code>{seedText}</code></div>
           <strong>{Object.keys(winners).length ? `推演预测 · 已选择 ${Object.keys(winners).length} 场` : "48 强正式签表"}</strong>
         </div>
         <div className="section-heading wide">
-          <div><span>02 / TOURNAMENT BRACKET</span><h2>正赛晋级图</h2></div>
+          <div><span>02 / TOURNAMENT BRACKET</span><h2>淘汰赛晋级推演图</h2></div>
           <div className="legend"><span><i className="seed-dot"/>种子</span><span><i className="rep-dot"/>复活晋级</span>{completed && <span className="interaction-hint">点击角色选择胜者</span>}</div>
         </div>
 
@@ -653,7 +653,7 @@ export default function Home() {
       {proofOpen && <div className="proof-overlay" role="dialog" aria-modal="true" aria-labelledby="proof-title">
         <article className="proof-card">
           <header className="proof-head">
-            <div><span>ALGORITHM NOTE · 可截图说明卡</span><h2 id="proof-title">抽签算法与概率证明</h2><p>第十届挺好萌正赛抽签器 · 当前实现说明</p></div>
+            <div><span>ALGORITHM NOTE · 可截图说明卡</span><h2 id="proof-title">抽签算法与概率证明</h2><p>第十届挺好萌淘汰赛抽签器 · 当前实现说明</p></div>
             <button onClick={() => setProofOpen(false)} aria-label="关闭算法说明">×</button>
           </header>
 
@@ -744,7 +744,7 @@ export default function Home() {
       </section>
 
       <footer>
-        <div><img className="footer-logo" src="/tinghao/logo26.avif" alt="挺好萌 2026"/><p><b>第十届挺好萌正赛抽签器</b><small>非官方工具 · 数据、规则与视觉素材来源于 tinghao.moe</small></p></div>
+        <div><img className="footer-logo" src="/tinghao/logo26.avif" alt="挺好萌 2026"/><p><b>第十届挺好萌淘汰赛抽签器</b><small>非官方工具 · 数据、规则与视觉素材来源于 tinghao.moe</small></p></div>
         <div className="footer-note"><p>随机结果仅用于模拟，正式签表以赛事运营公布为准。</p><button onClick={() => setProofOpen(true)}>算法与概率说明</button><a href="https://github.com/haoxiongliu/tinghao-main-draw" target="_blank" rel="noreferrer">GitHub 源码 ↗</a></div>
       </footer>
     </main>
