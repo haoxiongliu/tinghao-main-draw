@@ -304,6 +304,7 @@ export default function Home() {
   const [importNotice, setImportNotice] = useState<{ kind: "success" | "error"; text: string } | null>(null);
   const [sharePreview, setSharePreview] = useState<{ url: string; file: File; mode: ShareMode } | null>(null);
   const [shareBusy, setShareBusy] = useState<ShareMode | null>(null);
+  const [seedCopied, setSeedCopied] = useState(false);
   const [proofOpen, setProofOpen] = useState(false);
   const bracketCaptureRef = useRef<HTMLDivElement>(null);
 
@@ -382,7 +383,7 @@ export default function Home() {
 
   const copyResult = async () => {
     if (!drawText) return;
-    await navigator.clipboard.writeText(`第十届挺好萌正赛抽签结果\n随机种子：${seedText}\n\n${drawText}`);
+    await navigator.clipboard.writeText(`第十届挺好萌正赛抽签结果\n签位生成种子：${seedText}\n\n${drawText}`);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
@@ -449,7 +450,13 @@ export default function Home() {
 
   const systemShareImage = async () => {
     if (!sharePreview || !navigator.share || !navigator.canShare?.({ files: [sharePreview.file] })) return;
-    await navigator.share({ files: [sharePreview.file], title: sharePreview.mode === "prediction" ? "挺好萌正赛推演预测" : "挺好萌正赛签表" });
+    await navigator.share({ files: [sharePreview.file], title: sharePreview.mode === "prediction" ? "挺好萌正赛推演预测" : "挺好萌正赛签表", text: `签位生成种子：${seedText}` });
+  };
+
+  const copyShareSeed = async () => {
+    await navigator.clipboard.writeText(seedText);
+    setSeedCopied(true);
+    window.setTimeout(() => setSeedCopied(false), 1800);
   };
 
   const completed = !!plan && revealed === 48;
@@ -517,8 +524,8 @@ export default function Home() {
 
           <div className="control-grid">
             <label className="seed-field">
-              <span>随机种子 <small>相同文字可复现同一签表</small></span>
-              <div><input value={seedText} onChange={(e) => setSeedText(e.target.value)} disabled={!!plan} suppressHydrationWarning aria-label="随机种子"/><button onClick={() => !plan && setSeedText(createRandomSeed())} disabled={!!plan} title="生成随机种子">↻</button></div>
+              <span>签位生成种子 <small>相同文字可复现同一签表</small></span>
+              <div><input value={seedText} onChange={(e) => setSeedText(e.target.value)} disabled={!!plan} suppressHydrationWarning aria-label="签位生成种子"/><button onClick={() => !plan && setSeedText(createRandomSeed())} disabled={!!plan} title="生成签位种子">↻</button></div>
             </label>
             <div className="draw-constraints"><b>当前抽签限制</b><small>八名种子不同组 · 每个1/4区最多三名 · 1、2号种子位于不同1/4区</small></div>
           </div>
@@ -577,7 +584,7 @@ export default function Home() {
         <div className="capture-titlebar">
           <img src="/tinghao/logo26.avif" alt=""/>
           <div><b>第十届挺好萌 · 正赛晋级图</b><span>相同种子可复现同一签表</span></div>
-          <div className="capture-seed"><small>复现种子</small><code>{seedText}</code></div>
+          <div className="capture-seed"><small>签位生成种子</small><code>{seedText}</code></div>
           <strong>{Object.keys(winners).length ? `推演预测 · 已选择 ${Object.keys(winners).length} 场` : "48 强正式签表"}</strong>
         </div>
         <div className="section-heading wide">
@@ -627,8 +634,9 @@ export default function Home() {
 
       {sharePreview && <div className="share-overlay" role="dialog" aria-modal="true" aria-label="分享图片预览">
         <div className="share-dialog">
-          <div className="share-dialog-head"><div><span>SHARE IMAGE</span><h3>{sharePreview.mode === "prediction" ? "推演预测分享图" : "签表分享图"}</h3><small>图片已包含复现种子：{seedText}</small></div><button onClick={() => setSharePreview(null)} aria-label="关闭预览">×</button></div>
+          <div className="share-dialog-head"><div><span>SHARE IMAGE</span><h3>{sharePreview.mode === "prediction" ? "推演预测分享图" : "签表分享图"}</h3><small>图片已包含签位生成种子，相同种子可复现同一签表</small></div><button onClick={() => setSharePreview(null)} aria-label="关闭预览">×</button></div>
           <img src={sharePreview.url} alt={sharePreview.mode === "prediction" ? "推演预测分享图预览" : "签表分享图预览"}/>
+          <div className="share-seed-row"><span>签位生成种子</span><code>{seedText}</code><button onClick={copyShareSeed}>{seedCopied ? "已复制 ✓" : "复制种子"}</button></div>
           <div className="share-dialog-actions"><button className="primary" onClick={downloadShareImage}>下载 PNG <b>↓</b></button>{typeof navigator !== "undefined" && navigator.share && navigator.canShare?.({ files: [sharePreview.file] }) && <button className="secondary" onClick={systemShareImage}>系统分享</button>}</div>
         </div>
       </div>}
