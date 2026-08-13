@@ -1413,6 +1413,25 @@ a {
 .roster-list b {
   font-size: 13px;
 }
+.record-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.record-link span {
+  color: var(--detail);
+  font-size: 9px;
+  transition: transform 0.18s ease;
+}
+.record-link:hover {
+  color: var(--detail);
+}
+.record-link:hover span {
+  transform: translate(2px, -2px);
+}
 .roster-list small {
   font-size: 9px;
   color: var(--muted);
@@ -1422,7 +1441,7 @@ a {
   text-align: right;
 }
 .vote strong {
-  font: 20px Georgia;
+  font: 700 12px/1.2 var(--sans);
   color: var(--detail);
 }
 .tag {
