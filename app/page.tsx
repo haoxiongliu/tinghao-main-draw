@@ -12,6 +12,7 @@ type Participant = {
   name: string;
   vote: number;
   rate: number;
+  qualifierDay: number;
   avatar: string;
   source: Source;
   seed?: number;
@@ -21,7 +22,7 @@ type Participant = {
 const officialData: ReadonlyArray<readonly [string, number, number, Source]> = [
   ["超时空辉夜姬!-绫紬芦花",552,74.8,"seed"],["BanG Dream!(ON)-纯田真奈",503,70.45,"seed"],["超时空辉夜姬!-月见八千代",493,72.18,"seed"],["上伊那牡丹,酒醉身姿似百合花般-郡上奏",487,69.77,"seed"],["BanG Dream!(ON)-薇欧拉",472,63.96,"seed"],["BanG Dream!(ON)-藤都子",470,63.69,"seed"],["吹响!上低音号-久石奏",449,65.55,"seed"],["BanG Dream!(ON)-三角初华",434,63.36,"seed"],
   ["恋人不行-濑名紫阳花",411,59.48,"direct"],["Love Live 虹咲-优木雪菜",404,57.88,"direct"],["超时空辉夜姬!-辉夜",401,62.85,"direct"],["恋人不行-小柳香穗",401,62.85,"direct"],["恋人不行-王冢真唯",397,56.88,"direct"],["恋人不行-甘织遥奈",381,53.36,"direct"],["星灵感应-明内幽",374,54.76,"direct"],["BadGirl-凉风凉",366,53.59,"direct"],
-  ["GIRLS BAND CRY-货车",359,56.27,"direct"],["想吃掉我的非人少女-社美胡",357,52.12,"direct"],["BanG Dream!(ON)-仲町阿拉蕾",353,55.68,"direct"],["超时空辉夜姬!-酒寄彩叶",350,50.65,"direct"],["恋人不行-琴纱月",348,50.8,"direct"],["安达与岛村-岛村抱月",344,50.22,"direct"],["魔法少女小圆-佐仓杏子",327,51.58,"direct"],["少女歌剧-星见纯那",325,45.52,"direct"],
+  ["GIRLS BAND CRY-货车",359,56.27,"direct"],["想吃掉我的非人少女-社美胡",354,51.68,"direct"],["BanG Dream!(ON)-仲町阿拉蕾",353,55.68,"direct"],["超时空辉夜姬!-酒寄彩叶",350,50.65,"direct"],["恋人不行-琴纱月",348,50.8,"direct"],["安达与岛村-岛村抱月",344,50.22,"direct"],["魔法少女小圆-佐仓杏子",327,51.58,"direct"],["少女歌剧-星见纯那",325,45.52,"direct"],
   ["败犬女主太多了!-八奈见杏菜",315,45.59,"direct"],["败犬女主太多了!-小鞠知花",312,44.7,"direct"],["我推的孩子-有马加奈",307,44.95,"direct"],["BanG Dream!(ON)-高松灯",305,42.72,"direct"],["辉夜大小姐想让我告白-四条真妃",290,42.34,"repechage"],["恋人不行-甘织玲奈子",289,39.16,"direct"],["孤独摇滚-伊地知虹夏",286,45.11,"direct"],["败犬女主太多了!-烧盐柠檬",284,38.48,"direct"],
   ["败犬女主太多了!-温水佳树",279,39.08,"direct"],["上伊那牡丹,酒醉身姿似百合花般-张景岚",269,38.54,"direct"],["吹响!上低音号-吉川优子",269,37.68,"repechage"],["孤独摇滚-后藤一里",261,38.21,"direct"],["我推的孩子-黑川茜",259,40.85,"direct"],["败犬女主太多了!-马剃天爱星",259,37.48,"direct"],["上伊那牡丹,酒醉身姿似百合花般-砺波伊吹",256,40.38,"direct"],["前桥魔女-上泉舞衣",256,35.85,"repechage"],
   ["葬送的芙莉莲-辛美尔",255,40.22,"repechage"],["恋语轻唱-泉志帆",253,37.04,"repechage"],["Love Live 虹咲-高咲侑",251,36.32,"direct"],["向日葵马戏团-川澄樱翔",249,39.27,"repechage"],["BadGirl-优谷优",238,37.3,"direct"],["闪耀路标-黑金莲",231,33.09,"repechage"],["终将成为你-七海灯子",223,34.95,"direct"],["向山进发-仓上日向",212,30.95,"repechage"],
@@ -29,6 +30,7 @@ const officialData: ReadonlyArray<readonly [string, number, number, Source]> = [
 
 // 头像文件按上一版名单编号保存；修正排名后按角色重新映射，避免头像随名次错位。
 const avatarIds = [1,2,3,4,5,6,8,7,9,10,11,12,13,14,15,16,17,19,20,22,21,18,23,24,25,26,27,28,29,30,31,32,33,35,34,37,39,38,41,40,42,43,44,45,46,47,48,36] as const;
+const qualifierDays = [6,8,3,7,6,6,5,5,4,7,1,1,7,8,3,3,1,5,2,4,5,5,2,8,4,7,3,8,5,6,2,6,8,7,8,3,2,4,2,8,2,3,4,2,1,7,1,5] as const;
 
 function splitName(full: string) {
   const index = full.lastIndexOf("-");
@@ -41,10 +43,26 @@ const participants: Participant[] = officialData.map(([full, vote, rate, source]
   ...splitName(full),
   vote,
   rate,
+  qualifierDay: qualifierDays[index],
   avatar: `/tinghao/avatars/${avatarIds[index]}.avif`,
   source,
   seed: source === "seed" ? index + 1 : undefined,
 }));
+
+function officialRecordName(player: Pick<Participant, "work" | "name">) {
+  let work = player.work;
+  if (work === "恋人不行") work = "我怎么可能成为你的恋人,不行不行!";
+  if (work === "BanG Dream!(ON)") {
+    if (["纯田真奈", "三角初华"].includes(player.name)) work = "BanG Dream! Ave Mujica";
+    else if (player.name === "高松灯") work = "BanG Dream! It's MyGO!!!!!";
+    else work = "BanG Dream! YUME∞MITA";
+  }
+  return `${work}-${player.name}`;
+}
+
+function officialRecordUrl(player: Participant) {
+  return `https://tinghao.moe/#/record/?name=${encodeURIComponent(officialRecordName(player))}`;
+}
 
 function xmur3(value: string) {
   let hash = 1779033703 ^ value.length;
@@ -736,8 +754,8 @@ export default function Home() {
           {visibleParticipants.map((p) => <article key={p.id}>
             <span className="rank">{String(p.id).padStart(2,"0")}</span>
             <img className="roster-avatar" src={p.avatar} alt={`${p.name}头像`}/>
-            <div><b>{p.name}</b><small>{p.work}</small></div>
-            <div className="vote"><strong>{p.vote}</strong><small>有效票 · {p.rate}%</small></div>
+            <div><a className="record-link" href={officialRecordUrl(p)} target="_blank" rel="noreferrer" title={`查看${p.name}的挺好萌历史战绩`}>{p.name}<span>↗</span></a><small>{p.work}</small></div>
+            <div className="vote"><strong>海选 D{p.qualifierDay}</strong><small>{p.vote} 有效票 → {p.rate}%</small></div>
             <span className={`tag ${p.source}`}>{p.seed ? `${p.seed}号种子` : p.source === "repechage" ? "复活晋级" : "海选直通"}</span>
           </article>)}
         </div>
