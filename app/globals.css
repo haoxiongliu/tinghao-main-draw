@@ -505,6 +505,12 @@ a {
   margin: 3px 0 0;
   font-size: 23px;
 }
+.share-dialog-head small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 10px;
+}
 .share-dialog-head > button {
   width: 36px;
   height: 36px;
@@ -817,8 +823,27 @@ a {
   color: var(--muted);
   font-size: 9px;
 }
-.capture-titlebar strong {
+.capture-titlebar .capture-seed {
+  min-width: 330px;
   margin-left: auto;
+  padding: 7px 12px;
+  gap: 2px;
+  border: 1px solid #6273d638;
+  border-radius: 8px;
+  background: #ffffffb8;
+}
+.capture-seed small {
+  color: var(--detail);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.capture-seed code {
+  color: #28344a;
+  font: 700 10px/1.3 ui-monospace, SFMono-Regular, Consolas, monospace;
+  white-space: nowrap;
+}
+.capture-titlebar strong {
   color: var(--detail);
   font-size: 11px;
 }
