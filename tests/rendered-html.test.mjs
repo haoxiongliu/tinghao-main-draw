@@ -32,10 +32,11 @@ test("server-renders the draw tool and corrected roster", async () => {
 });
 
 test("contains the official 48 entrants, avatars, and no starter preview", async () => {
-  const [page, packageJson, avatars] = await Promise.all([
+  const [page, packageJson, avatars, actualDraw] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readdir(new URL("../public/tinghao/avatars", import.meta.url)),
+    readFile(new URL("../public/data/tinghao-main-draw-2026-actual.json", import.meta.url), "utf8").then(JSON.parse),
   ]);
 
   const rosterRows = page.match(/\["[^"]+",\d+(?:\.\d+)?,\d+(?:\.\d+)?,"(?:seed|direct|repechage)"\]/g) ?? [];
@@ -50,7 +51,15 @@ test("contains the official 48 entrants, avatars, and no starter preview", async
   assert.match(page, /quarterCounts\.every\(\(count\) => count <= 3\)/);
   assert.match(page, /function parseCsv/);
   assert.match(page, /function createRandomSeed/);
-  assert.match(page, /useState\(createRandomSeed\)/);
+  assert.match(page, /useState\(actualDrawSeed\)/);
+  assert.match(page, /useState<Participant\[\] \| null>\(\(\) => \[\.\.\.actualPlan\]\)/);
+  assert.match(page, /seedText === actualDrawSeed \? \[\.\.\.actualPlan\] : makePlan\(seedText\)/);
+  assert.match(page, /当前展示运营公布的第十届实际签表/);
+  assert.equal(actualDraw.draw.length, 48);
+  assert.equal(new Set(actualDraw.draw.map((row) => row.name)).size, 48);
+  assert.deepEqual(actualDraw.draw.slice(0, 3).map((row) => row.name), ["仲町阿拉蕾", "郡上奏", "优木雪菜"]);
+  assert.deepEqual(actualDraw.draw.slice(-3).map((row) => row.name), ["社美胡", "砺波伊吹", "凉风凉"]);
+  assert.match(page, /下载第十届实际签表 JSON/);
   assert.doesNotMatch(page, /useState\("tinghao-2026"\)/);
   assert.match(page, /加载 JSON \/ CSV/);
   assert.match(page, /accept="\.json,\.csv,application\/json,text\/csv"/);
