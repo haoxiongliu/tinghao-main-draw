@@ -61,6 +61,11 @@ test("contains the official 48 entrants, avatars, and no starter preview", async
   assert.deepEqual(actualDraw.draw.slice(-3).map((row) => row.name), ["社美胡", "砺波伊吹", "凉风凉"]);
   assert.match(page, /下载第十届实际签表 JSON/);
   assert.match(page, /第十届挺好萌 · 淘汰赛晋级推演图/);
+  assert.match(page, /const qualifierDays = \[6,8,3,7/);
+  assert.match(page, /officialRecordUrl\(p\)/);
+  assert.match(page, /https:\/\/tinghao\.moe\/#\/record\/\?name=/);
+  assert.match(page, /海选 D\{p\.qualifierDay\}/);
+  assert.match(page, /\{p\.vote\} 有效票 → \{p\.rate\}%/);
   assert.doesNotMatch(page, /正赛/);
   assert.doesNotMatch(page, /useState\("tinghao-2026"\)/);
   assert.match(page, /加载 JSON \/ CSV/);
@@ -81,7 +86,7 @@ test("contains the official 48 entrants, avatars, and no starter preview", async
   assert.doesNotMatch(page, /冠军/);
   assert.match(page, /久石奏",449,65\.55,"seed"/);
   assert.match(page, /三角初华",434,63\.36,"seed"/);
-  assert.match(page, /社美胡",357,52\.12,"direct"/);
+  assert.match(page, /社美胡",354,51\.68,"direct"/);
   assert.match(page, /仓上日向",212,30\.95,"repechage"/);
   assert.match(page, /const avatarIds = \[1,2,3,4,5,6,8,7/);
   assert.match(page, /github\.com\/haoxiongliu\/tinghao-main-draw/);
